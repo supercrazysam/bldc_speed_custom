@@ -19,6 +19,10 @@ void app_example_init(void) {
 
 void app_custom_start(void) {
 	stop_now = false;
+
+        palSetPadMode(HW_UART_TX_PORT, HW_UART_TX_PIN, PAL_MODE_INPUT_PULLDOWN);   //SET TX as input
+        palSetPadMode(HW_UART_RX_PORT, HW_UART_RX_PIN, PAL_MODE_INPUT_PULLDOWN);   //SET RX as input
+
 	chThdCreateStatic(example_thread_wa, sizeof(example_thread_wa), NORMALPRIO, example_thread, NULL);
 }
 
@@ -46,44 +50,24 @@ static THD_FUNCTION(example_thread, arg)
 		
 			//mc_interface_set_pid_speed(pot * 10000.0);
 			//mc_interface_release_motor();
-		
-                mc_interface_set_pid_pos(0,1500);
+		if (palReadPad(HW_UART_TX_PORT, HW_UART_TX_PIN)) 
+                {
+			mc_interface_set_pid_speed(600.0);
+		} 
+                else if (palReadPad(HW_UART_RX_PORT, HW_UART_RX_PIN)) 
+                {
+                        mc_interface_set_pid_speed(-600.0);
+		}
+                else
+                {
+                        mc_interface_release_motor();
+                }
+
+             
+                chThdSleepMilliseconds(3);
+                timeout_reset();
                 
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-                mc_interface_set_pid_pos(360,3000);
-                
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-                mc_interface_set_pid_pos(720,5000);
-                
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-
+                 
 		// Reset the timeout
 		
 

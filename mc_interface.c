@@ -85,7 +85,7 @@ static volatile int m_sample_trigger;
 static volatile float m_last_adc_duration_sample;
 
 // Private functions
-static void update_override_limits(volatile mc_configuration *conf);
+//static void update_override_limits(volatile mc_configuration *conf);
 
 // Function pointers
 static void(*pwn_done_func)(void) = 0;
@@ -384,7 +384,7 @@ void mc_interface_set_pid_speed(float rpm) {
 	}
 }
 
-void mc_interface_set_pid_pos(float pos) {
+void mc_interface_set_pid_pos(float pos, float rpm) {
 	if (mc_interface_try_input()) {
 		return;
 	}
@@ -397,11 +397,11 @@ void mc_interface_set_pid_pos(float pos) {
 	switch (m_conf.motor_type) {
 	case MOTOR_TYPE_BLDC:
 	case MOTOR_TYPE_DC:
-		mcpwm_set_pid_pos(pos);
+		mcpwm_set_pid_pos(DIR_MULT * m_position_set, rpm);
 		break;
 
 	case MOTOR_TYPE_FOC:
-		mcpwm_foc_set_pid_pos(pos);
+		mcpwm_foc_set_pid_pos(DIR_MULT * m_position_set, rpm);
 		break;
 
 	default:
@@ -1331,7 +1331,7 @@ void mc_interface_adc_inj_int_handler(void) {
  * @param conf
  * The configaration to update.
  */
-static void update_override_limits(volatile mc_configuration *conf) {
+void update_override_limits(volatile mc_configuration *conf) {
 	const float v_in = GET_INPUT_VOLTAGE();
 	const float rpm_now = mc_interface_get_rpm();
 

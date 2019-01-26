@@ -196,6 +196,17 @@ void commands_process_packet(unsigned char *data, unsigned int len) {
 		mc_interface_set_current((float)buffer_get_int32(data, &ind) / 1000.0);
 		timeout_reset();
 		break;
+        case COMM_SET_CURRENT_GET_POSITION:
+		ind = 0;
+		mc_interface_set_current((float)buffer_get_int32(data, &ind) / 1000.0);
+		timeout_reset();
+		ind = 0;
+		send_buffer[ind++] = COMM_ROTOR_POSITION_CUMULATIVE;
+		buffer_append_int32(send_buffer, encoder_cumulative_counts(), &ind);
+		//buffer_append_float32(send_buffer, mc_interface_get_rpm(), 1e0, &ind);
+		//send_buffer[ind++] = mc_interface_get_fault();
+		commands_send_packet(send_buffer, ind);
+		break;
 
 	case COMM_SET_CURRENT_BRAKE:
 		ind = 0;
@@ -211,10 +222,26 @@ void commands_process_packet(unsigned char *data, unsigned int len) {
 
 	case COMM_SET_POS:
 		ind = 0;
-		mc_interface_set_pid_pos((float)buffer_get_int32(data, &ind) / 1000000.0);
+		mc_interface_set_pid_pos((float)buffer_get_int32(data, &ind) / 1000000.0, 0);
 		timeout_reset();
 		break;
 
+	case COMM_SET_POS_CUMULATIVE:
+		ind = 0;
+    float pos = ((float)buffer_get_int32(data, &ind) / 100000.0); // get position		    
+    float rpm = ((float)buffer_get_int32(data, &ind)); // get rpm parameter 
+    //commands_printf("pos=%.0f, rpm=%.0f", pos, rpm);
+    /*if (rpm > 0.1){
+      mcconf = *mc_interface_get_configuration(); // read current config
+      mcconf.l_max_erpm = rpm; // change erpm parameter 
+      update_override_limits(&mcconf); // update changed limits
+      mcpwm_foc_set_configuration(&mcconf); // apply changed config          
+    }*/
+    mc_interface_set_pid_pos(pos, rpm); // set position control set-point    
+
+		timeout_reset();
+		break;   
+    
 	case COMM_SET_HANDBRAKE:
 		ind = 0;
 		mc_interface_set_handbrake(buffer_get_float32(data, 1e3, &ind));
@@ -888,6 +915,18 @@ void commands_send_rotor_pos(float rotor_pos) {
 
 	commands_send_packet(buffer, index);
 }
+
+void commands_send_rotor_pos_counts(int32_t rotor_pos) {
+	uint8_t buffer[5];
+	int32_t index = 0;
+
+	buffer[index++] = COMM_ROTOR_POSITION_CUMULATIVE;
+	buffer_append_int32(buffer, (int32_t)(rotor_pos), &index);
+
+	commands_send_packet(buffer, index);
+}
+
+
 
 void commands_send_experiment_samples(float *samples, int len) {
 	if ((len * 4 + 1) > 256) {

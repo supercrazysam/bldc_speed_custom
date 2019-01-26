@@ -47,43 +47,16 @@ static THD_FUNCTION(example_thread, arg)
 			//mc_interface_set_pid_speed(pot * 10000.0);
 			//mc_interface_release_motor();
 		
-                mc_interface_set_pid_pos(0,1500);
-                
+                mc_interface_set_pid_pos(0);
+		chThdSleepMilliseconds(1000);
+                mc_interface_set_pid_pos(90);
                 timeout_reset();
-		chThdSleepMilliseconds(900);
+                chThdSleepMilliseconds(1000);
+                mc_interface_set_pid_pos(180);
                 timeout_reset();
-                chThdSleepMilliseconds(900);
+                chThdSleepMilliseconds(1000);
+                mc_interface_set_pid_pos(270);
                 timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-                mc_interface_set_pid_pos(360,3000);
-                
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-                mc_interface_set_pid_pos(720,5000);
-                
-                timeout_reset();
-		chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-                chThdSleepMilliseconds(900);
-                timeout_reset();
-
-
 		// Reset the timeout
 		
 

@@ -50,13 +50,8 @@ void app_set_configuration(app_configuration *conf) {
 		nrf_driver_stop();
 	}
 
-#if CAN_ENABLE
 	comm_can_set_baud(conf->can_baud_rate);
-#endif
-
-#ifdef APP_CUSTOM_TO_USE
 	app_custom_stop();
-#endif
 
 	switch (appconf.app_to_use) {
 	case APP_PPM:
@@ -96,10 +91,8 @@ void app_set_configuration(app_configuration *conf) {
 		break;
 
 	case APP_CUSTOM:
-#ifdef APP_CUSTOM_TO_USE
 		hw_stop_i2c();
 		app_custom_start();
-#endif
 		break;
 
 	default:
@@ -111,9 +104,6 @@ void app_set_configuration(app_configuration *conf) {
 	app_uartcomm_configure(appconf.app_uart_baudrate);
 	app_nunchuk_configure(&appconf.app_chuk_conf);
 
-#ifdef APP_CUSTOM_TO_USE
-	app_custom_configure(&appconf);
-#endif
 
 	rfhelp_update_conf(&appconf.app_nrf_conf);
 }
