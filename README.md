@@ -8,4 +8,5 @@ So i just brutally merge them manually, and it somehow works fine
 Now with Firmware 3.4
 + Multi-turn positioning
 + Positon mode with Velocity parameter
+
 All credits belongs to https://github.com/raess1/vesc-FW
