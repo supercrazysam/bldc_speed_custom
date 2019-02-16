@@ -23,6 +23,24 @@ originally only 4 byte, which is reponsible for the position
 now changed buffer 4 to 8     seems 1 int32 is 4 byte, so 2 int32 => 8 byte
 position, rpm   => 4 , 4   => so in total 8!
 
+```
+void comm_can_set_pos(uint8_t controller_id, float pos) {
+  int32_t send_index = 0;
+  uint8_t buffer[4];
+  buffer_append_int32(buffer, (int32_t)(pos *1e6), &send_index);  //* 1e7 pos/5 = pos
+  sendPacket(controller_id | ((uint32_t)CAN_PACKET_SET_POS << 8), buffer, send_index);
+}
+
+void comm_can_set_vpos(uint8_t controller_id, float pos, float rpm) {
+  int32_t send_index = 0;
+  uint8_t buffer[8];   //changed buffer 4 to 8     seems 1 int32 is 4 byte, so 2 int32 => 8 byte   .... while in firmware comm_can.h   data8 changed to data16.... with  "data<<4" 4 byte shift to ensure data receive
+  buffer_append_int32(buffer, (int32_t)(pos *1e6), &send_index);  
+  buffer_append_int32(buffer, (int32_t)(rpm *1e0), &send_index); 
+  sendPacket(controller_id | ((uint32_t)CAN_PACKET_SET_POS << 8), buffer, send_index);
+}
+
+```
+
 ****************
 In comm_can.c
 CAN_PACKET_SET_POS
