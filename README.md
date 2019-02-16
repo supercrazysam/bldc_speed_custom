@@ -21,7 +21,7 @@ In mbed
 void comm_can_set_vpos() 
 originally only 4 byte, which is reponsible for the position
 now changed buffer 4 to 8     seems 1 int32 is 4 byte, so 2 int32 => 8 byte
-position, rpm   => 4 , 4   => so in total 8!
+position, rpm   => 4 + 4   => so in total 8!
 
 ```
 void comm_can_set_pos(uint8_t controller_id, float pos) {
