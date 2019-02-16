@@ -73,7 +73,7 @@ It seems that the position PID error (I & D) only reset if ```m_control_mode != 
 
 And the velocity PID error (I & D) NEVER reset! WTF?!
 
-This all causes the instability of the position mode with speed control.
+This all causes the instability of the position mode with speed control 
 Pure position => OK 
 Pure velocity => OK 
 Position with velocity => Position ok(acceptable, seems still have problem?),  Velocity fucked
