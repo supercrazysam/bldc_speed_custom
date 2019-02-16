@@ -30,10 +30,10 @@ data8 seems to be for position  (confiusing)
 so data8 changed to data16.... 
 position  then  velocity
 
-'''
+```
 //mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind),600);   before parameter mod
 
 float pos = ((float)buffer_get_float32(rxmsg.data16, 1e6, &ind)); // get position		    
 float rpm = ((float)buffer_get_float32(rxmsg.data16, 1e0, &ind)); // get rpm parameter 
 mc_interface_set_pid_pos(pos,rpm);
-'''
+```
