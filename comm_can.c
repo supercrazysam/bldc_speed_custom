@@ -195,8 +195,13 @@ static THD_FUNCTION(cancom_process_thread, arg) {
 
 					case CAN_PACKET_SET_POS:
 						ind = 0;
-						//mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind));
-                                                mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind),600);
+						//mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind));   before speed
+                                                
+                                                //mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind),600);   before parameter mod
+
+                                                float pos = ((float)buffer_get_float32(rxmsg.data16, 1e6, &ind)); // get position		    
+                                                float rpm = ((float)buffer_get_float32(rxmsg.data16, 1e0, &ind)); // get rpm parameter 
+                                                mc_interface_set_pid_pos(pos,rpm);
 						timeout_reset();
 						break;
 
