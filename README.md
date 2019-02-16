@@ -55,3 +55,24 @@ float pos = ((float)buffer_get_float32(rxmsg.data16, 1e6, &ind)); // get positio
 float rpm = ((float)buffer_get_float32(rxmsg.data16, 1e0, &ind)); // get rpm parameter 
 mc_interface_set_pid_pos(pos,rpm);
 ```
+
+
+!!!!!!!!!!!!!!!!!!!!!!!
+*****************************
+Serious Problem found!
+in mcpwm_foc.c
+```
+// PID is off. Return.
+	if (m_control_mode != CONTROL_MODE_POS) {
+		pos_i_term = 0;
+		pos_prev_error = 0;
+		return;
+}
+```
+It seems that the position PID error (I & D) only reset if ```m_control_mode != CONTROL_MODE_POS```
+and the velocity PID error (I & D) NEVER reset! WTF?!
+
+This all causes the instability of the position mode with speed control.
+Pure position => OK
+Pure velocity => OK
+Position with velocity => Position ok(acceptable, seems still have problem?),  Velocity fucked
