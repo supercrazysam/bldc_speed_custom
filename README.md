@@ -11,7 +11,7 @@ Now with Firmware 3.4
 + Positon mode with Velocity parameter
 
 All credits belongs to https://github.com/raess1/vesc-FW
-
+http://vedder.se/forums/viewtopic.php?f=5&p=9459&sid=eac9679065d12af51106adaa0b530a6f#p9459
 
 #################################################
 comm_can.c and mbed program changed.
