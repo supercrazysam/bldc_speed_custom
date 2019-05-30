@@ -23,7 +23,7 @@ originally only 4 byte, which is reponsible for the position
 now changed buffer 4 to 8     seems 1 int32 is 4 byte, so 2 int32 => 8 byte
 position, rpm   => 4 + 4   => so in total 8!
 
-```
+```cpp
 void comm_can_set_pos(uint8_t controller_id, float pos) {
   int32_t send_index = 0;
   uint8_t buffer[4];
@@ -48,7 +48,7 @@ data8 seems to be for position  (confiusing)
 so data8 changed to data16.... 
 position  then  velocity
 
-```
+```cpp
 //mc_interface_set_pid_pos(buffer_get_float32(rxmsg.data8, 1e6, &ind),600);   before parameter mod
 
 float pos = ((float)buffer_get_float32(rxmsg.data16, 1e6, &ind)); // get position		    
@@ -61,7 +61,7 @@ mc_interface_set_pid_pos(pos,rpm);
 *****************************
 Serious Problem found!
 in mcpwm_foc.c
-```
+```cpp
 // PID is off. Return.
 	if (m_control_mode != CONTROL_MODE_POS) {
 		pos_i_term = 0;
